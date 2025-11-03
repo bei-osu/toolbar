@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         osu! Modding TB
-// @namespace    https://github.com/bei-osu/toolbar
+// @namespace    github.com/bei-osu/toolbar/blob/main/toolbar.js
 // @version      2025.11.03
 // @description  Have Fun I Guess
 // @author       Bei
