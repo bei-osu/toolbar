@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         osu! Modding TB
 // @namespace    github.com/bei-osu/toolbar/blob/main/toolbar.js
-// @version      2025.11.03
+// @version      2025.11.04
 // @description  Have Fun I Guess
 // @author       Bei
 // @match        https://osu.ppy.sh/beatmapsets/*/discussion*
