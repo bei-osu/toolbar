@@ -9876,42 +9876,45 @@ ${weakWordsFound.length > 0 ? `
                         container.scrollTop = container.scrollHeight;
                 }
                 static addNoteToUI(note) {
-                        const container = document.getElementById('collab-notes-container');
-                        if (!container) return;
-                        const noteDiv = document.createElement('div');
-                        noteDiv.dataset.noteid = note.id || note.created;
-                        noteDiv.style.cssText = 'background: rgba(26, 26, 26, 0.6); border-radius: 4px; padding: 10px; margin-bottom: 8px;';
-                        noteDiv.innerHTML = `
-		<div style="display: flex; justify-content: space-between; margin-bottom: 4px;">
-			<span style="font-family: monospace; font-size: 11px; color: #6bb6ff;">${Utils.sanitizeHTML(note.time)}</span>
-			<span style="font-size: 10px; color: rgba(255, 255, 255, 0.5);">${Utils.sanitizeHTML(note.author)}</span>
-		</div>
-		<div style="color: rgba(255,255,255,0.85); font-size: 11px; margin-bottom: 4px;">${Utils.sanitizeHTML(note.text)}</div>
-		<div style="font-size: 9px; color: rgba(255,255,255,0.4);">${new Date(note.created).toLocaleString()}</div>
-		${this.renderReactions(note.reactions || [], note.id || note.created)}
-		${this.renderReplies(note.replies || [])}
-		<div style="display: flex; gap: 6px; margin-top: 6px; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 6px;">
-			<button class="react-btn" data-noteid="${note.id || note.created}" style="background: none; border: none; color: rgba(255,255,255,0.5); cursor: pointer; font-size: 10px; padding: 2px 6px; border-radius: 3px; transition: all 0.15s;">
-				<i class="fas fa-smile"></i> React
-			</button>
-			<button class="reply-btn" data-noteid="${note.id || note.created}" style="background: none; border: none; color: rgba(255,255,255,0.5); cursor: pointer; font-size: 10px; padding: 2px 6px; border-radius: 3px; transition: all 0.15s;">
-				<i class="fas fa-reply"></i> Reply
-			</button>
-		</div>
-	`;
-                        noteDiv.querySelector('.react-btn')?.addEventListener('click', async (e) => {
-                                e.stopPropagation();
-                                const emoji = prompt('Enter emoji (👍 ❤️ 🎵 ✅ 🔥):');
-                                if (emoji) await this.addReaction(note.id || note.created, emoji);
-                        });
-                        noteDiv.querySelector('.reply-btn')?.addEventListener('click', async (e) => {
-                                e.stopPropagation();
-                                const text = prompt('Reply:');
-                                if (text?.trim()) await this.addReply(note.id || note.created, text);
-                        });
-                        container.appendChild(noteDiv);
-                        container.scrollTop = container.scrollHeight;
-                }
+    const container = document.getElementById('collab-notes-container');
+    if (!container) return;
+    const noteDiv = document.createElement('div');
+    noteDiv.dataset.noteid = note.id || note.created;
+    noteDiv.style.cssText = 'background: rgba(26, 26, 26, 0.6); border-radius: 4px; padding: 10px; margin-bottom: 8px;';
+    noteDiv.innerHTML = `
+        <div style="display: flex; justify-content: space-between; margin-bottom: 4px;">
+            <span style="font-family: monospace; font-size: 11px; color: #6bb6ff;">${Utils.sanitizeHTML(note.time)}</span>
+            <span style="font-size: 10px; color: rgba(255, 255, 255, 0.5);">${Utils.sanitizeHTML(note.author)}</span>
+        </div>
+        <div style="color: rgba(255,255,255,0.85); font-size: 11px; margin-bottom: 4px;">${Utils.sanitizeHTML(note.text)}</div>
+        <div style="font-size: 9px; color: rgba(255,255,255,0.4);">${new Date(note.created).toLocaleString()}</div>
+        ${this.renderReactions(note.reactions || [], note.id || note.created)}
+        ${this.renderReplies(note.replies || [])}
+        <div style="display: flex; gap: 6px; margin-top: 6px; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 6px;">
+            <button class="react-btn" data-noteid="${note.id || note.created}" style="background: none; border: none; color: rgba(255,255,255,0.5); cursor: pointer; font-size: 10px; padding: 2px 6px; border-radius: 3px; transition: all 0.15s;">
+                <i class="fas fa-smile"></i> React
+            </button>
+            <button class="reply-btn" data-noteid="${note.id || note.created}" style="background: none; border: none; color: rgba(255,255,255,0.5); cursor: pointer; font-size: 10px; padding: 2px 6px; border-radius: 3px; transition: all 0.15s;">
+                <i class="fas fa-reply"></i> Reply
+            </button>
+        </div>
+    `;
+    const reactBtn = noteDiv.querySelector('.react-btn');
+    const replyBtn = noteDiv.querySelector('.reply-btn');
+    
+    reactBtn?.addEventListener('click', async (e) => {
+        e.stopPropagation();
+        await this.showEmojiPicker(e.target, note.id || note.created);
+    }); 
+    replyBtn?.addEventListener('click', async (e) => {
+        e.stopPropagation();
+        const text = prompt('Reply:');
+        if (text?.trim()) await this.addReply(note.id || note.created, text);
+    });
+    container.appendChild(noteDiv);
+    this.setupReactionHandlers(noteDiv);
+    container.scrollTop = container.scrollHeight;
+}
                 static async loadNotes() {
                         if (!this.SERVER_IP) return;
                         const beatmapsetId = window.location.pathname.match(/\/beatmapsets\/(\d+)/)?.[1];
