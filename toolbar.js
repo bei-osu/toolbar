@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         osu! Modding TB
-// @namespace    http://tampermonkey.net/
+// @namespace    https://github.com/bei-osu/toolbar
 // @version      2025.11.03
 // @description  Have Fun I Guess
 // @author       Bei
